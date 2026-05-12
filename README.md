@@ -131,7 +131,7 @@ git --version
 cd %USERPROFILE%\Desktop
 
 # 克隆项目（替换为你的仓库地址）
-git clone https://github.com/你的用户名/DeepSeekChat.git
+git clone https://github.com/xingzhe1243-sketch/deepseek-TUI--.git
 
 # 进入项目目录
 cd DeepSeekChat
