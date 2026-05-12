@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'">
+  <title>AI 代理</title>
+  <link rel="stylesheet" href="agent.css">
+</head>
+<body>
+  <div id="agent-app">
+    <header id="agent-header">
+      <span id="agent-icon">🤖</span>
+      <span id="agent-title">AI 代理</span>
+      <div class="agent-header-actions">
+        <button id="btn-pipeline-next" title="发送到下一阶段">▶ 流水线</button>
+        <button id="btn-dark-mode" title="深色模式">🌙</button>
+      </div>
+    </header>
+
+    <div id="agent-body">
+      <!-- 上下文信息 -->
+      <div id="agent-context" class="hidden">
+        <div class="context-bar">
+          <span id="ctx-label"></span>
+          <button id="btn-clear-ctx" class="btn-xs">✕</button>
+        </div>
+        <pre id="ctx-content"></pre>
+      </div>
+
+      <!-- 代码编辑器 -->
+      <div id="editor-section" class="hidden">
+        <div class="section-header">
+          <span id="editor-filename">代码编辑器</span>
+          <div>
+            <button id="btn-save-file" class="btn-xs">💾 保存</button>
+            <button id="btn-send-code" class="btn-xs">📤 发送审查</button>
+          </div>
+        </div>
+        <textarea id="code-editor" placeholder="在此编辑代码..." spellcheck="false"></textarea>
+      </div>
+
+      <!-- 对话区 -->
+      <div id="agent-chat-messages"></div>
+
+      <!-- 输入 -->
+      <div id="agent-input-area">
+        <textarea id="agent-input" placeholder="输入指令..." rows="1"></textarea>
+        <button id="btn-agent-send" disabled>发送</button>
+        <button id="btn-agent-stop" style="display:none" title="停止">⏹</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="agent.js"></script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'">
+  <title>DeepSeek 工作台</title>
+  <link rel="stylesheet" href="workspace.css">
+</head>
+<body>
+<div id="app">
+  <header id="topbar">
+    <span class="logo">🤖 DeepSeek 工作台</span>
+    <div class="topbar-actions">
+      <button id="btn-open-chat">💬 聊天</button>
+      <button id="btn-open-terminal">⬛ 终端</button>
+      <button id="btn-pick-project">📂 打开项目</button>
+      <button id="btn-dark-mode">🌙</button>
+    </div>
+  </header>
+
+  <div id="main-layout">
+    <!-- 左侧面板 -->
+    <aside id="left-panel">
+      <div class="tab-bar">
+        <button class="tab-btn active" data-tab="files">📁 文件</button>
+        <button class="tab-btn" data-tab="git">🔀 Git</button>
+        <button class="tab-btn" data-tab="recent">🕐 最近</button>
+      </div>
+      <div id="tab-files" class="tab-content active">
+        <div class="filter-bar"><input type="text" id="file-filter" placeholder="🔍 过滤文件..."></div>
+        <div id="file-tree"><div class="empty-hint">请打开一个项目目录</div></div>
+      </div>
+      <div id="tab-git" class="tab-content">
+        <div id="git-panel">
+          <div class="git-branch" id="git-branch"></div>
+          <div id="git-changes"></div>
+        </div>
+      </div>
+      <div id="tab-recent" class="tab-content">
+        <div id="recent-projects"></div>
+        <div class="section-header"><h3>⚡ 快速操作</h3></div>
+        <div id="quick-actions"></div>
+        <div id="action-history"></div>
+      </div>
+    </aside>
+
+    <!-- 中间面板 -->
+    <main id="center-panel">
+      <section id="task-section">
+        <div class="section-header">
+          <h3>📋 任务队列</h3>
+          <div class="section-header-actions">
+            <input type="text" id="task-filter" placeholder="筛选任务..." style="width:140px">
+            <select id="task-status-filter" style="width:100px">
+              <option value="all">全部</option><option value="pending">待处理</option><option value="in_progress">进行中</option><option value="done">已完成</option>
+            </select>
+            <button id="btn-add-task" class="btn-sm">＋ 新建</button>
+            <button id="btn-batch-delete" class="btn-sm btn-danger">🗑 批量删除</button>
+          </div>
+        </div>
+        <div id="task-list"></div>
+      </section>
+
+      <section id="pipeline-section">
+        <div class="section-header"><h3>🔄 执行流水线</h3></div>
+        <div id="pipeline-view">
+          <div class="pipeline-stage" data-stage="code">
+            <div class="stage-icon">💻</div><div class="stage-label">编码</div>
+            <div class="stage-status" id="stage-code-status">待命</div>
+          </div>
+          <div class="pipeline-arrow">→</div>
+          <div class="pipeline-stage" data-stage="review">
+            <div class="stage-icon">🔍</div><div class="stage-label">审查</div>
+            <div class="stage-status" id="stage-review-status">待命</div>
+          </div>
+          <div class="pipeline-arrow">→</div>
+          <div class="pipeline-stage" data-stage="score">
+            <div class="stage-icon">📊</div><div class="stage-label">评分</div>
+            <div class="stage-status" id="stage-score-status">待命</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="agents-section">
+        <div class="section-header"><h3>🤖 活跃代理</h3></div>
+        <div id="agent-list"></div>
+      </section>
+    </main>
+
+    <!-- 右侧面板 -->
+    <aside id="right-panel">
+      <div class="panel-header">📊 统计</div>
+      <div id="project-stats">
+        <div class="stat-card"><span class="stat-num" id="stat-files">0</span><span class="stat-label">文件</span></div>
+        <div class="stat-card"><span class="stat-num" id="stat-tasks">0</span><span class="stat-label">任务</span></div>
+        <div class="stat-card"><span class="stat-num" id="stat-active">0</span><span class="stat-label">进行中</span></div>
+        <div class="stat-card"><span class="stat-num" id="stat-done">0</span><span class="stat-label">完成</span></div>
+      </div>
+
+      <div class="panel-header" style="margin-top:12px">💾 快照</div>
+      <div id="snapshot-list"><div class="empty-hint">无快照</div></div>
+      <button id="btn-create-snapshot" class="btn-sm" style="width:100%;margin-top:4px">📸 保存当前状态</button>
+
+      <div class="panel-header" style="margin-top:12px">📋 指令模板</div>
+      <div id="template-list"></div>
+      <button id="btn-save-template" class="btn-sm" style="width:100%;margin-top:4px">＋ 保存常用指令</button>
+
+      <div class="panel-header" style="margin-top:12px">🏷️ 会话标签</div>
+      <div id="session-tags-panel">
+        <input type="text" id="session-tag-input" placeholder="搜索标签...">
+        <div id="session-tag-list"></div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- 弹窗 -->
+  <div id="task-modal" class="modal hidden">
+    <div class="modal-content">
+      <h3>新建任务</h3>
+      <input type="text" id="task-title" placeholder="任务标题">
+      <textarea id="task-desc" placeholder="描述" rows="3"></textarea>
+      <input type="text" id="task-tags-input" placeholder="标签 (逗号分隔)">
+      <div class="modal-actions">
+        <button id="btn-task-cancel">取消</button>
+        <button id="btn-task-create" class="btn-primary">创建</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="workspace.js"></script>
+</body>
+</html>

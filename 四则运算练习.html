@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>100以内四则运算练习</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 500px;
+            max-width: 90vw;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+        .question {
+            text-align: center;
+            font-size: 48px;
+            font-weight: bold;
+            color: #2c3e50;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            letter-spacing: 5px;
+        }
+        .input-area {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .input-area input {
+            flex: 1;
+            padding: 15px 20px;
+            font-size: 24px;
+            border: 3px solid #e0e0e0;
+            border-radius: 12px;
+            outline: none;
+            transition: border-color 0.3s;
+            text-align: center;
+        }
+        .input-area input:focus {
+            border-color: #667eea;
+        }
+        .input-area button {
+            padding: 15px 30px;
+            font-size: 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.3s;
+            white-space: nowrap;
+        }
+        .input-area button:hover {
+            background: #5a6fd6;
+        }
+        .result {
+            text-align: center;
+            font-size: 20px;
+            min-height: 40px;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .result.correct {
+            color: #27ae60;
+            background: #e8f8f0;
+        }
+        .result.wrong {
+            color: #e74c3c;
+            background: #fde8e8;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+        .stats span {
+            font-weight: bold;
+        }
+        .stats .correct-count {
+            color: #27ae60;
+        }
+        .stats .wrong-count {
+            color: #e74c3c;
+        }
+        .buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        .buttons button {
+            padding: 12px 25px;
+            font-size: 16px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .buttons button:hover {
+            background: #667eea;
+            color: white;
+        }
+        .settings {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+        .settings h3 {
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 18px;
+        }
+        .settings-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+        }
+        .settings-row label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 15px;
+            cursor: pointer;
+        }
+        .settings-row label input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        .settings-row select {
+            padding: 8px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+        }
+        .settings-row select:focus {
+            border-color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧮 100以内四则运算</h1>
+        
+        <div class="question" id="question">5 + 3 = ?</div>
+        
+        <div class="input-area">
+            <input type="number" id="answerInput" placeholder="输入答案" autofocus>
+            <button onclick="checkAnswer()">确认</button>
+        </div>
+        
+        <div class="result" id="result"></div>
+        
+        <div class="stats">
+            <div>✅ 正确: <span class="correct-count" id="correctCount">0</span></div>
+            <div>❌ 错误: <span class="wrong-count" id="wrongCount">0</span></div>
+            <div>📊 正确率: <span id="accuracy">0%</span></div>
+        </div>
+        
+        <div class="buttons">
+            <button onclick="generateQuestion()">下一题</button>
+            <button onclick="resetStats()">重置统计</button>
+        </div>
+        
+        <div class="settings">
+            <h3>⚙️ 运算设置</h3>
+            <div class="settings-row">
+                <label><input type="checkbox" id="chkAdd" checked> 加法</label>
+                <label><input type="checkbox" id="chkSub" checked> 减法</label>
+                <label><input type="checkbox" id="chkMul" checked> 乘法</label>
+                <label><input type="checkbox" id="chkDiv" checked> 除法</label>
+                <label>最大数: 
+                    <select id="maxNum">
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                        <option value="100" selected>100</option>
+                    </select>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let correctCount = 0;
+        let wrongCount = 0;
+        let currentAnswer = null;
+
+        function getMaxNum() {
+            return parseInt(document.getElementById('maxNum').value);
+        }
+
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function getOperators() {
+            const ops = [];
+            if (document.getElementById('chkAdd').checked) ops.push('+');
+            if (document.getElementById('chkSub').checked) ops.push('-');
+            if (document.getElementById('chkMul').checked) ops.push('×');
+            if (document.getElementById('chkDiv').checked) ops.push('÷');
+            return ops;
+        }
+
+        function generateQuestion() {
+            const ops = getOperators();
+            if (ops.length === 0) {
+                document.getElementById('question').textContent = '请至少选择一种运算！';
+                document.getElementById('result').textContent = '';
+                document.getElementById('result').className = 'result';
+                document.getElementById('answerInput').value = '';
+                currentAnswer = null;
+                return;
+            }
+
+            const op = ops[Math.floor(Math.random() * ops.length)];
+            const max = getMaxNum();
+            let a, b, answer, questionText;
+
+            switch (op) {
+                case '+':
+                    a = getRandomInt(1, max);
+                    b = getRandomInt(1, max - a);
+                    answer = a + b;
+                    questionText = `${a} + ${b} = ?`;
+                    break;
+                case '-':
+                    a = getRandomInt(1, max);
+                    b = getRandomInt(1, a);
+                    answer = a - b;
+                    questionText = `${a} - ${b} = ?`;
+                    break;
+                case '×':
+                    a = getRandomInt(1, Math.min(10, Math.floor(max / 2)));
+                    b = getRandomInt(1, Math.min(10, Math.floor(max / a)));
+                    answer = a * b;
+                    questionText = `${a} × ${b} = ?`;
+                    break;
+                case '÷':
+                    b = getRandomInt(1, Math.min(10, Math.floor(max / 2)));
+                    const quotient = getRandomInt(1, Math.min(10, Math.floor(max / b)));
+                    a = b * quotient;
+                    answer = quotient;
+                    questionText = `${a} ÷ ${b} = ?`;
+                    break;
+            }
+
+            document.getElementById('question').textContent = questionText;
+            document.getElementById('result').textContent = '';
+            document.getElementById('result').className = 'result';
+            document.getElementById('answerInput').value = '';
+            document.getElementById('answerInput').focus();
+            currentAnswer = answer;
+        }
+
+        function checkAnswer() {
+            if (currentAnswer === null) {
+                generateQuestion();
+                return;
+            }
+
+            const input = document.getElementById('answerInput');
+            const userAnswer = parseInt(input.value);
+            const resultDiv = document.getElementById('result');
+
+            if (isNaN(userAnswer)) {
+                resultDiv.textContent = '⚠️ 请输入一个数字！';
+                resultDiv.className = 'result wrong';
+                return;
+            }
+
+            if (userAnswer === currentAnswer) {
+                correctCount++;
+                resultDiv.textContent = '✅ 回答正确！太棒了！';
+                resultDiv.className = 'result correct';
+            } else {
+                wrongCount++;
+                resultDiv.textContent = `❌ 回答错误！正确答案是 ${currentAnswer}`;
+                resultDiv.className = 'result wrong';
+            }
+
+            document.getElementById('correctCount').textContent = correctCount;
+            document.getElementById('wrongCount').textContent = wrongCount;
+            updateAccuracy();
+
+            setTimeout(generateQuestion, 1500);
+        }
+
+        function updateAccuracy() {
+            const total = correctCount + wrongCount;
+            const accuracy = total === 0 ? 0 : Math.round((correctCount / total) * 100);
+            document.getElementById('accuracy').textContent = accuracy + '%';
+        }
+
+        function resetStats() {
+            correctCount = 0;
+            wrongCount = 0;
+            document.getElementById('correctCount').textContent = '0';
+            document.getElementById('wrongCount').textContent = '0';
+            document.getElementById('accuracy').textContent = '0%';
+            document.getElementById('result').textContent = '🔄 统计已重置';
+            document.getElementById('result').className = 'result';
+            generateQuestion();
+        }
+
+        // 键盘事件：回车键提交答案
+        document.getElementById('answerInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkAnswer();
+            }
+        });
+
+        // 初始化
+        generateQuestion();
+    </script>
+</body>
+</html>

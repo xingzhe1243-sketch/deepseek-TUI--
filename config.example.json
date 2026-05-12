@@ -1,0 +1,9 @@
+{
+  "apiKey": "sk-your-api-key-here",
+  "apiBase": "https://api.deepseek.com",
+  "model": "deepseek-chat",
+  "systemPrompt": "",
+  "temperature": 0.7,
+  "darkMode": false,
+  "lang": "zh"
+}
