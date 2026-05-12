@@ -675,3 +675,5 @@ MIT License — 自由使用、修改、分发。
 > 这个应用是 100% 由 AI 辅助编写的。  
 > 从第一行代码到最后一个 bug 修复，全程通过对话完成。  
 > 希望能激励你——即使零基础，也能借助 AI 构建复杂的软件。
+> 耗时半天，感谢Hunter Bown大佬的开源分享：https://github.com/Hmbown/DeepSeek-TUI
+！
